@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>⚡ Smart Grid Real-Time Routing Dashboard</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #f1f1f1;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+        }
+        h1 {
+            color: #ff9800;
+        }
+        #log {
+            background-color: #1e1e1e;
+            padding: 15px;
+            border-radius: 8px;
+            height: 600px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        .log-entry {
+            margin-bottom: 6px;
+        }
+        .timestamp {
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <h1>⚡ Smart Grid Real-Time Routing Dashboard</h1>
+    <div id="log">Waiting for data...</div>
+
+    <script>
+        const socket = new WebSocket('ws://localhost:6789');
+        const logDiv = document.getElementById('log');
+    
+        socket.onopen = function () {
+            appendLog("🟢 Connected to WebSocket server");
+        };
+    
+        socket.onmessage = function (event) {
+            try {
+                const data = JSON.parse(event.data);
+    
+                if (data.type === "energy") {
+                    appendLog(`⚡ Home ${data.home}: ${data.energy_kwh} kWh @ ${data.timestamp}`);
+                } else if (data.type === "routing") {
+                    appendLog(`🚀 Optimal routing from ${data.source}:`);
+                    for (const route of data.paths) {
+                        appendLog(`📍 Path to ${route.target}: ${route.path.join(" ➡️ ")} (Cost: ${route.cost})`);
+                    }
+                } else {
+                    appendLog("❌ Unknown data type received.");
+                }
+    
+            } catch (err) {
+                appendLog("❌ Failed to parse incoming data.");
+            }
+        };
+    
+        socket.onclose = function () {
+            appendLog("🔌 Disconnected from WebSocket server.");
+        };
+    
+        function appendLog(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${timestamp}] ${message}<br>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>⚡ Real-Time Smart Energy Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f7f7f7;
+        }
+        h1 { color: #333; }
+        #status { margin-bottom: 10px; }
+        #data-log {
+            max-height: 300px;
+            overflow-y: auto;
+            background: #fff;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        .log-entry {
+            margin-bottom: 5px;
+            font-size: 15px;
+        }
+        #controls {
+            margin: 15px 0;
+        }
+        button {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>⚡ Real-Time Smart Energy Dashboard</h1>
+    <div id="status">🔌 Connecting to WebSocket...</div>
+
+    <div id="controls">
+        <button id="pauseBtn">⏸️ Pause</button>
+        <button id="resumeBtn" disabled>▶️ Resume</button>
+    </div>
+
+    <div id="data-log"></div>
+
+    <script>
+        let socket;
+        let isPaused = false;
+
+        const statusDiv = document.getElementById("status");
+        const dataLogDiv = document.getElementById("data-log");
+        const pauseBtn = document.getElementById("pauseBtn");
+        const resumeBtn = document.getElementById("resumeBtn");
+
+        function connectWebSocket() {
+            socket = new WebSocket("ws://localhost:6789");
+
+            socket.onopen = () => {
+                statusDiv.textContent = "🟢 Connected to WebSocket server";
+            };
+
+            socket.onmessage = (event) => {
+                if (isPaused) return;
+                const data = JSON.parse(event.data);
+
+                const entry = document.createElement("div");
+                entry.classList.add("log-entry");
+                entry.innerHTML = `
+                    <strong>🏠 Home:</strong> ${data.home_id} |
+                    <strong>📅 Time:</strong> ${data.timestamp} |
+                    <strong>⚡ Energy:</strong> ${data.energy_kwh} kWh
+                `;
+                dataLogDiv.appendChild(entry);
+                dataLogDiv.scrollTop = dataLogDiv.scrollHeight;
+            };
+
+            socket.onclose = () => {
+                statusDiv.textContent = "🔌 WebSocket connection closed";
+            };
+
+            socket.onerror = (error) => {
+                statusDiv.textContent = "❗ WebSocket error: " + error;
+            };
+        }
+
+        pauseBtn.onclick = () => {
+            isPaused = true;
+            pauseBtn.disabled = true;
+            resumeBtn.disabled = false;
+        };
+
+        resumeBtn.onclick = () => {
+            isPaused = false;
+            pauseBtn.disabled = false;
+            resumeBtn.disabled = true;
+        };
+
+        connectWebSocket();
+    </script>
+</body>
+</html>
