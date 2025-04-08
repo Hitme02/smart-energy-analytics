@@ -1,0 +1,6 @@
+data/household_power_consumption.txt
+data/cleaned_energy_data.csv
+output/dynamic_pricing_output.csv
+__pycache__/
+*.pyc
+*.ipynb_checkpoints
