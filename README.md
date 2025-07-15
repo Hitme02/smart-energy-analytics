@@ -1,13 +1,13 @@
-# Smart Energy Analytics
+## Smart Energy Analytics
 
 This repository focuses on privacy-first, AI-driven smart grid optimization.
 Below is an overview of the project's structure and the purpose of each directory:
 
-## Overview
+# Overview
 
 This project aims to optimize smart grid operations using artificial intelligence while ensuring user privacy. It encompasses various components, including data processing, forecasting, dynamic pricing, and real-time analytics.
 
-## Repository Structure
+# Repository Structure
 
 - [`api`](api/): Backend services and API endpoints.
 - [`assistant`](assistant/): AI assistant for user interactions.
@@ -28,7 +28,7 @@ This project aims to optimize smart grid operations using artificial intelligenc
 - [`trading`](trading/): Energy trading mechanisms and strategies.
 - [`utils`](utils/): Utility scripts and helper functions.
 
-## Getting Started
+# Getting Started
 
 To set up the project locally:
 
@@ -47,7 +47,7 @@ To set up the project locally:
    Typically, you might start a development server or execute a main script.
    Refer to specific module documentation for detailed instructions.
 
-## Notes
+# Notes
 
 - Data Files:  
   Large data files are not included in this repository due to size constraints.  
